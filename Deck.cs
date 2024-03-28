@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace BlackJack_Console
 {
     /// <summary>
-    /// A Deck is a list of Cards, and will initililze with the standard set of 52.
+    /// A Deck is a list of Cards, and will initialize with the standard set of 52.
     /// 
     /// Deck has 2 methods: Shuffle() and DealCard().
     /// Shuffle with randomly reorder the cards currently in the deck.
@@ -48,7 +48,6 @@ namespace BlackJack_Console
 
         public Card DealCard()
         {
-
             Card card = deck[0];
             deck.RemoveAt(0);
             return card;

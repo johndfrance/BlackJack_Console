@@ -10,6 +10,8 @@ namespace BlackJack_Console
     {
         private List<Card> Cards { get; set; }
 
+        public int Count { get; }
+
         public Hand()
         {
             Cards = new List<Card>();
@@ -24,6 +26,13 @@ namespace BlackJack_Console
         {
             Cards.Remove(card);
         }
+
+        // add method that returns how big the hand is (loop count)
+        public int countCard()
+        {
+            return Cards.Count();
+        }
+        
 
         public int HandValue()
         {
