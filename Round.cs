@@ -35,9 +35,11 @@ namespace BlackJack_Console
          */
 
         private int pot { get; set; }
+
         private Hand playerHand;
         private Hand dealerHand;
         private Deck deck;
+        private Card card;
 
         public Round(Deck deck) {this.deck = deck;}
 
@@ -52,14 +54,18 @@ namespace BlackJack_Console
              * NOTE: double down is only available when you make your first decision in the gameplay loop
              */
             deck.Shuffle();
+
+            Console.WriteLine("");
             Console.WriteLine("New Round Starting");
-            Console.WriteLine("Place your bet");
+            Console.Write("");
+            Console.Write("Place your bet: ");
 
             // This will store the bet in 'pot' only if the user input is a valid integer.
             int parsedBet;
             if (!int.TryParse(Console.ReadLine(), out parsedBet))
             {
                 Console.WriteLine("Invalid bet amount. Please enter a valid number.");
+                Console.Write("");
                 return 0; 
             }
             pot = parsedBet; 
@@ -101,7 +107,7 @@ namespace BlackJack_Console
                 // Checking for blackjack at the start of the player's turn.
                 if (playerHand.HandValue() == 21) { Console.WriteLine("Blackjack! Player wins."); return pot; }
 
-                Console.WriteLine("Hit [h], Stand [s]" + (playerHand.countCard() == 2 ? ", Double down [d]" : "") + ": ");
+                Console.Write("Hit [h], Stand [s]" + (playerHand.countCard() == 2 ? ", Double down [d]" : "") + ": ");
                 string playerChoice = Console.ReadLine().ToLower();
 
                 switch (playerChoice)
@@ -112,7 +118,7 @@ namespace BlackJack_Console
                         playerHand.addCard(card);
                         GameState();
 
-                        if (playerHand.HandValue() > 21) { Console.WriteLine("Bust! Player loses."); return -pot; } break;
+                        if (playerHand.HandValue() > 21) { Console.WriteLine("Bust! Player loses."); Console.Write(""); return -pot; } break;
 
                     // Double down
                     case "d": 
@@ -122,7 +128,7 @@ namespace BlackJack_Console
                             playerHand.addCard(deck.DealCard());
                             GameState();
 
-                            if (playerHand.HandValue() > 21) { Console.WriteLine("Bust! Player loses."); return -pot; } playerTurn = false; 
+                            if (playerHand.HandValue() > 21) { Console.WriteLine("Bust! Player loses."); Console.Write(""); return -pot; } playerTurn = false; 
                         }
                         else {Console.WriteLine("Double down can only be done on the first hand.");} break;
 
@@ -140,22 +146,69 @@ namespace BlackJack_Console
             int playerHandValue = playerHand.HandValue();
             int dealerHandValue = dealerHand.HandValue();
 
-            if (dealerHandValue > 21 || playerHandValue > dealerHandValue) { Console.WriteLine("Player Wins!"); return pot;}
-            else if (playerHandValue < dealerHandValue) {Console.WriteLine("Dealer Wins."); return -pot;}
-            else { Console.WriteLine("Push. It's a tie."); return 0;}
+            if (dealerHandValue > 21 || playerHandValue > dealerHandValue) { Console.WriteLine("Player Wins!"); Console.Write(""); return pot;}
+            else if (playerHandValue < dealerHandValue) {Console.WriteLine("Dealer Wins."); Console.Write(""); return -pot;}
+            else { Console.WriteLine("Push. It's a tie."); Console.Write(""); return 0;}
         }
 
         // TODO:
-        public void Insure() { }
+        public void Insure()
+        {
+            bool IsInsured = false;
+
+            foreach (var card in dealerHand) 
+            {
+                if (card.Rank == Rank.Ace)
+                {
+                    IsInsured = true;
+                    break;
+                }
+            }
+
+            if (IsInsured)
+            {
+                Console.WriteLine("Dealer has an Ace. Insurance is possible.");
+
+                Console.WriteLine("Would you like insurance? [Y/N]: ");
+                string playerChoice = Console.ReadLine().ToLower();
+
+                if (playerChoice == "y")
+                {
+                    Console.WriteLine("Enter your side bet: ");
+                    if (!int.TryParse(Console.ReadLine(), out int sideBet))
+                    {
+                        Console.WriteLine("Invalid bet amount. Please enter a valid number.");
+                        Console.Write("");
+                    }
+                    // Implementation of handling the side bet goes here
+                    pot = 0;
+                }
+                else if (playerChoice != "n")
+                {
+                    Console.WriteLine("Invalid option, please try again.");
+                    Console.Write("");
+                }
+            }
+            else
+            {
+                return; // Exit the method if there is no Ace, as insurance is not relevant
+            }
+        }
+
         public void Split() { }
 
 
         public void GameState()
         {
+            Console.WriteLine("");
             Console.WriteLine("Player Hand:");
             playerHand.PrintHand();
+            Console.Write("");
+
+            Console.Write("");
             Console.WriteLine("Dealer Hand:");
             dealerHand.PrintHand();
+            Console.Write("");
         }
     }
 }

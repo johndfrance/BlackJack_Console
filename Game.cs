@@ -23,24 +23,44 @@ namespace BlackJack_Console
         {
             Game game = new Game();
 
+            Console.WriteLine("=================================================");
+            Console.WriteLine("                                                 ");
+            Console.WriteLine(" .------..------..------..------..------..------.");
+            Console.WriteLine(" |B.--. ||L.--. ||A.--. ||C.--. ||K.--. ||  --. |");
+            Console.WriteLine(" | :(): || :/\\: || (\\/) || :/\\: || :/\\: || :(): |");
+            Console.WriteLine(" | ()() || (__) || :\\/: || :\\/: || :\\/: || ()() |");
+            Console.WriteLine(" | '--' || '--' || '--'J|| '--'A|| '--'C|| '--'K|");
+            Console.WriteLine(" `------'`------'`------'`------'`------'`------'");
+            Console.WriteLine("                                                 ");
+            Console.WriteLine("=================================================");
+
             while (true)
             {
-                Round round = new Round(GameDeck);
-                player.wallet += round.PlayRound();
-                Console.WriteLine("\nPlayer now has: $" + player.wallet.ToString());
-                if(GameDeck.deck.Count()< 20)
-                {
-                    Console.WriteLine("\nSHUFFLING\n");
-                    GameDeck = new Deck();
-                    GameDeck.Shuffle();
-                }
-                if(player.wallet <= 0)
-                {
-                    Console.WriteLine("You don't have anymore money");
-                    break;
-                }
-            }
+                Console.Write("Play Again? [yes/no]: ");
+                string playerChoice = Console.ReadLine().ToLower();
+                Console.Write("");
 
+                if (playerChoice == "yes") 
+                {
+                    Round round = new Round(GameDeck);
+                    player.wallet += round.PlayRound();
+                    Console.WriteLine("\nPlayer now has: $" + player.wallet.ToString());
+                    Console.Write("");
+                    if (GameDeck.deck.Count() < 20)
+                    {
+                        Console.WriteLine("\nSHUFFLING\n");
+                        GameDeck = new Deck();
+                        GameDeck.Shuffle();
+                    }
+                    if (player.wallet <= 0)
+                    {
+                        Console.WriteLine("You don't have anymore money");
+                        Console.Write("");
+                        break;
+                    }
+                }
+                else { Console.WriteLine("Thanks for playing!"); break; }
+            }
         }
     }
 }

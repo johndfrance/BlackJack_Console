@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -6,7 +7,7 @@ using System.Threading.Tasks;
 
 namespace BlackJack_Console
 {
-    public class Hand
+    public class Hand : IEnumerable<Card>
     {
         private List<Card> Cards { get; set; }
 
@@ -67,10 +68,21 @@ namespace BlackJack_Console
         {
             foreach (Card card in Cards)
             {
-                Console.WriteLine(card.ToString());
+                Console.WriteLine("[" + card.ToString() + "]");
             }
+            Console.Write("");
             Console.WriteLine("Value: "+ HandValue().ToString());
             Console.WriteLine("");
+        }
+
+        public IEnumerator<Card> GetEnumerator()
+        {
+            return Cards.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator() // Explicit non-generic interface implementation
+        {
+            return GetEnumerator();
         }
     } 
 }
