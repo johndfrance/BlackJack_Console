@@ -18,7 +18,5 @@ namespace BlackJack_Console
             name = "JEFF";
             wallet = 20000;
         }
-
-
     }
 }

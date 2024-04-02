@@ -13,26 +13,13 @@ namespace BlackJack_Console
 
         public int Count { get; }
 
-        public Hand()
-        {
-            Cards = new List<Card>();
-        }
+        public Hand() { Cards = new List<Card>(); }
 
-        public void addCard(Card card)
-        {
-            Cards.Add(card);
-        }
+        public void addCard(Card card) { Cards.Add(card); }
 
-        public void removeCard(Card card)
-        {
-            Cards.Remove(card);
-        }
+        public void removeCard(Card card) { Cards.Remove(card); }
 
-        // add method that returns how big the hand is (loop count)
-        public int countCard()
-        {
-            return Cards.Count();
-        }
+        public int countCard() { return Cards.Count(); }
         
 
         public int HandValue()
@@ -43,10 +30,7 @@ namespace BlackJack_Console
             foreach (Card card in Cards)
             {
                 sum += (int)card.Rank;
-                if (card.Rank == Rank.Ace)
-                {
-                    numOfAces++;
-                }
+                if (card.Rank == Rank.Ace) { numOfAces++; }
             }
             // Aces are 11 unless that causes the hand to bust, if so they are 1.
             while (numOfAces > 0)
@@ -56,33 +40,21 @@ namespace BlackJack_Console
                     sum -= 10;
                     numOfAces--;
                 }
-                else
-                {
-                    break;
-                }
+                else { break; }
             }
             return sum;
         }
 
         public void PrintHand()
         {
-            foreach (Card card in Cards)
-            {
-                Console.WriteLine("[" + card.ToString() + "]");
-            }
+            foreach (Card card in Cards) { Console.WriteLine("[" + card.ToString() + "]");}
             Console.Write("");
             Console.WriteLine("Value: "+ HandValue().ToString());
             Console.WriteLine("");
         }
 
-        public IEnumerator<Card> GetEnumerator()
-        {
-            return Cards.GetEnumerator();
-        }
+        public IEnumerator<Card> GetEnumerator() { return Cards.GetEnumerator(); }
+         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); } // Explicit non-generic interface implementation
 
-        IEnumerator IEnumerable.GetEnumerator() // Explicit non-generic interface implementation
-        {
-            return GetEnumerator();
-        }
     } 
 }

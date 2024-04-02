@@ -18,7 +18,7 @@ namespace BlackJack_Console
          *      - if hit hasn't been called within the first dealing then double down.
          *      - double the pot but draw one card then end hand for player [needs to be done ONLY in the first hand].
          *          - once [hit] happens, double down is disabled.
-         *   - insurance
+         *   - insurance [WIP]
          *      - if dealer face card is ace, there is a good chance that the next card is worth 10.
          *      - offer player insurance [side bet], therefore being breakeven
          *          - if insurance is clicked && blackjack clause is true then make pot 0.
@@ -105,7 +105,11 @@ namespace BlackJack_Console
             while (playerTurn)
             {
                 // Checking for blackjack at the start of the player's turn.
-                if (playerHand.HandValue() == 21) { Console.WriteLine("Blackjack! Player wins."); return pot; }
+                if (playerHand.HandValue() == 21) 
+                { 
+                    Console.WriteLine("Blackjack! Player wins."); 
+                    return pot; 
+                }
 
                 Console.Write("Hit [h], Stand [s]" + (playerHand.countCard() == 2 ? ", Double down [d]" : "") + ": ");
                 string playerChoice = Console.ReadLine().ToLower();
@@ -118,7 +122,13 @@ namespace BlackJack_Console
                         playerHand.addCard(card);
                         GameState();
 
-                        if (playerHand.HandValue() > 21) { Console.WriteLine("Bust! Player loses."); Console.Write(""); return -pot; } break;
+                        if (playerHand.HandValue() > 21) 
+                        { 
+                            Console.WriteLine("Bust! Player loses."); 
+                            Console.Write(""); 
+                            return -pot; 
+                        } 
+                        break;
 
                     // Double down
                     case "d": 
@@ -128,14 +138,28 @@ namespace BlackJack_Console
                             playerHand.addCard(deck.DealCard());
                             GameState();
 
-                            if (playerHand.HandValue() > 21) { Console.WriteLine("Bust! Player loses."); Console.Write(""); return -pot; } playerTurn = false; 
+                            if (playerHand.HandValue() > 21) 
+                            { 
+                                Console.WriteLine("Bust! Player loses."); 
+                                Console.Write(""); 
+                                return -pot; 
+                            } 
+                            playerTurn = false; 
                         }
-                        else {Console.WriteLine("Double down can only be done on the first hand.");} break;
+                        else 
+                        {
+                            Console.WriteLine("Double down can only be done on the first hand.");
+                        } 
+                        break;
 
                     //stand
-                    case "s": playerTurn = false; break;
+                    case "s": 
+                        playerTurn = false; 
+                        break;
 
-                    default: Console.WriteLine("Invalid option, please try again."); break;
+                    default: 
+                        Console.WriteLine("Invalid option, please try again."); 
+                        break;
                 }
             }
 
@@ -146,9 +170,24 @@ namespace BlackJack_Console
             int playerHandValue = playerHand.HandValue();
             int dealerHandValue = dealerHand.HandValue();
 
-            if (dealerHandValue > 21 || playerHandValue > dealerHandValue) { Console.WriteLine("Player Wins!"); Console.Write(""); return pot;}
-            else if (playerHandValue < dealerHandValue) {Console.WriteLine("Dealer Wins."); Console.Write(""); return -pot;}
-            else { Console.WriteLine("Push. It's a tie."); Console.Write(""); return 0;}
+            if (dealerHandValue > 21 || playerHandValue > dealerHandValue) 
+            { 
+                Console.WriteLine("Player Wins!"); 
+                Console.Write(""); 
+                return pot;
+            }
+            else if (playerHandValue < dealerHandValue) 
+            {
+                Console.WriteLine("Dealer Wins."); 
+                Console.Write(""); 
+                return -pot;
+            }
+            else 
+            { 
+                Console.WriteLine("Push. It's a tie."); 
+                Console.Write(""); 
+                return 0;
+            }
         }
 
         // TODO:
