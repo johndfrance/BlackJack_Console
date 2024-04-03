@@ -13,6 +13,7 @@ namespace BlackJack_Console
     {
         private int pot { get; set; }
 
+        private Player player;
         private Hand playerHand;
         private Hand dealerHand;
         private Deck deck;
@@ -210,71 +211,98 @@ namespace BlackJack_Console
             }
         }
 
-        public void Split() 
+        public void Split()
         {
-            // insert this function where the dealing of cards takes place
-
-            /*
-             * In order to split, two cards must be dealt that have the same value.
-             * 
-             * NOTE: Splitting is optional where if you do split, you turn a single hand 
-             * into two hands where you place an additional bet equal to the original bet.
-             * 
-             * Once you split the cards, the dealer will give you an additional card per hand.
-             * For example if you have two sevens, it will now be one seven on each hand plus a 
-             * drawn card for each hand like [seven of diamond, ace of hearts] and 
-             * [seven of diamond, nine of spades].
-             * 
-             * you are to play out each hand one at a time. You are allowed to hit, stand, double down,
-             * and split again (only splitting when you recieve another pair). As you are playing one hand
-             * at a time, the wins and losses will be encapsulated within those hands individually.
-             * 
-             * SPECIAL RULES:
-             * 1) Splitting aces allow you do draw one card to each ace but you are prohibited from 
-             * hitting.
-             * 2) if you get a 10 card after splitting aces, it is counted as 21 points rather than 'blackjack'
-             * 3) you are allowed to resplit if you get a pair right after the first split causing four hands rather than two.
-             * 4) you are allowed to double down on both hands one by one after the split.
-             */
-
-            //TODO:
-
-            // possible idea: create two instances of a hand with thier individual draws and switch between them as you play?
-
-            bool canSplit;
-
-            //check if two cards are a pair
-            foreach(Card card in Hand)
+            // Check if the player's hand is eligible for a split
+            if (playerHand.CanSplit())
             {
-                if (Cards.Count == 2 && Cards[0].Rank == Cards[1].Rank)
+                Console.Write("Would you like to split? [y/n]: ");
+                string playerChoice = Console.ReadLine().ToLower();
+
+                if (playerChoice == "y")
                 {
-                    canSplit = true;
-                    break;
-                }
-                else
-                {
-                    canSplit = false;
-                    break;
+                    // Deduct an additional bet for the second hand
+                    player.wallet -= pot;
+
+                    // Split the current hand into two new hands
+                    Hand primaryHand = new Hand();
+                    Hand secondaryHand = new Hand();
+
+                    primaryHand.addCard(playerHand.Cards[0]);
+                    secondaryHand.addCard(playerHand.Cards[1]);
+
+                    primaryHand.addCard(deck.DealCard());
+                    secondaryHand.addCard(deck.DealCard());
+
+                    // Temporarily replace the playerHand with each split hand and play it out and save the original hand to restore later if needed
+                    Hand originalHand = playerHand; 
+
+                    playerHand = primaryHand;
+                    Console.WriteLine("Playing first split hand:");
+                    PlayHand();
+
+                    playerHand = secondaryHand;
+                    Console.WriteLine("Playing second split hand:");
+                    PlayHand();
+
+                    playerHand = originalHand; // Restore the original hand
                 }
             }
-
-            if (canSplit == true)
+            else
             {
-                //draw a card from the deck for each hand
+                Console.WriteLine("Splitting not possible.");
+            }
+        }
 
-                // validate if a hand has an ace in it
 
-                // validate if a card has a value of 10
 
-                // figure out how to play each hand individually??? [probably something to do with objects of hands]
+        // This method is to play each hand after a split
+        public void PlayHand()
+        {
+            bool playerTurn = true; 
 
-                // hit for each hand
+            while (playerTurn)
+            {
+                Console.Write("Hit [h], Stand [s]" + (playerHand.Cards.Count == 2 ? ", Double down [d]" : "") + ": ");
+                string playerChoice = Console.ReadLine().ToLower();
 
-                // stand for each hand
-
-                // double down for each hand
-
-                // split if another pair occurs [have a split validation logic embedded in the main loop??]
+                switch (playerChoice)
+                {
+                    case "h": // Hit
+                        playerHand.addCard(deck.DealCard());
+                        Console.WriteLine("New hand:");
+                        playerHand.PrintHand();
+                        if (playerHand.HandValue() > 21)
+                        {
+                            Console.WriteLine("Bust! Player loses this hand.");
+                            playerTurn = false; // End player's turn after bust
+                        }
+                        break;
+                    case "s": // Stand
+                        playerTurn = false; // End player's turn
+                        break;
+                    case "d": // Double down
+                        if (playerHand.Cards.Count == 2)
+                        {
+                            player.wallet -= pot;
+                            pot *= 2;
+                            playerHand.addCard(deck.DealCard());
+                            playerHand.PrintHand();
+                            if (playerHand.HandValue() > 21)
+                            {
+                                Console.WriteLine("Bust! Player loses this hand.");
+                            }
+                            playerTurn = false; // End player's turn after double down
+                        }
+                        else
+                        {
+                            Console.WriteLine("Double down not allowed after hitting.");
+                        }
+                        break;
+                    default:
+                        Console.WriteLine("Invalid option, please try again.");
+                        break;
+                }
             }
         }
 

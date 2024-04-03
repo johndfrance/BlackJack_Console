@@ -9,9 +9,18 @@ namespace BlackJack_Console
 {
     public class Hand : IEnumerable<Card>
     {
-        private List<Card> Cards { get; set; }
+        public List<Card> Cards { get; set; }
 
-        public int Count { get; }
+        public Card GetCardAtIndex(int index)
+        {
+            if (index < 0 || index >= Cards.Count)
+            {
+                throw new ArgumentOutOfRangeException(nameof(index), "Index is out of range.");
+            }
+            return Cards[index];
+        }
+
+        public int Count => Cards.Count;
 
         public Hand() { Cards = new List<Card>(); }
 
@@ -42,6 +51,11 @@ namespace BlackJack_Console
                 else { break; }
             }
             return sum;
+        }
+
+        public bool CanSplit()
+        {
+            return Cards.Count == 2 && Cards[0].Rank == Cards[1].Rank;
         }
 
         public void PrintHand()
