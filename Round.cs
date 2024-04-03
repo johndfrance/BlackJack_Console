@@ -11,29 +11,6 @@ namespace BlackJack_Console
 {
     public class Round
     {
-        /*
-         * Rami's TODO List:
-         *  [RULES] (in order of priority)
-         *   - double down [DONE]
-         *      - if hit hasn't been called within the first dealing then double down.
-         *      - double the pot but draw one card then end hand for player [needs to be done ONLY in the first hand].
-         *          - once [hit] happens, double down is disabled.
-         *   - insurance [WIP]
-         *      - if dealer face card is ace, there is a good chance that the next card is worth 10.
-         *      - offer player insurance [side bet], therefore being breakeven
-         *          - if insurance is clicked && blackjack clause is true then make pot 0.
-         *   - split.
-         *      - when you get a pair of cards [example: two threes]
-         *          - split the pair
-         *          - place as side bet
-         *          - get dealt one card per pair therefore making two hands.
-         *          - once both are established, player is forced to play both hands.
-         *   
-         *   [game start]
-         *   - only see one of the dealers card, no more, no less [INSURANCE RELATED].
-         *   - 
-         */
-
         private int pot { get; set; }
 
         private Hand playerHand;
@@ -41,7 +18,7 @@ namespace BlackJack_Console
         private Deck deck;
         private Card card;
 
-        public Round(Deck deck) {this.deck = deck;}
+        public Round(Deck deck) { this.deck = deck; }
 
         public int PlayRound()
         {
@@ -66,9 +43,9 @@ namespace BlackJack_Console
             {
                 Console.WriteLine("Invalid bet amount. Please enter a valid number.");
                 Console.Write("");
-                return 0; 
+                return 0;
             }
-            pot = parsedBet; 
+            pot = parsedBet;
 
             playerHand = new Hand();
             playerHand.addCard(deck.DealCard());
@@ -105,10 +82,10 @@ namespace BlackJack_Console
             while (playerTurn)
             {
                 // Checking for blackjack at the start of the player's turn.
-                if (playerHand.HandValue() == 21) 
-                { 
-                    Console.WriteLine("Blackjack! Player wins."); 
-                    return pot; 
+                if (playerHand.HandValue() == 21)
+                {
+                    Console.WriteLine("Blackjack! Player wins.");
+                    return pot;
                 }
 
                 Console.Write("Hit [h], Stand [s]" + (playerHand.countCard() == 2 ? ", Double down [d]" : "") + ": ");
@@ -122,80 +99,79 @@ namespace BlackJack_Console
                         playerHand.addCard(card);
                         GameState();
 
-                        if (playerHand.HandValue() > 21) 
-                        { 
-                            Console.WriteLine("Bust! Player loses."); 
-                            Console.Write(""); 
-                            return -pot; 
-                        } 
+                        if (playerHand.HandValue() > 21)
+                        {
+                            Console.WriteLine("Bust! Player loses.");
+                            Console.Write("");
+                            return -pot;
+                        }
                         break;
 
                     // Double down
-                    case "d": 
+                    case "d":
                         if (playerHand.countCard() == 2)
                         {
                             pot *= 2;
                             playerHand.addCard(deck.DealCard());
                             GameState();
 
-                            if (playerHand.HandValue() > 21) 
-                            { 
-                                Console.WriteLine("Bust! Player loses."); 
-                                Console.Write(""); 
-                                return -pot; 
-                            } 
-                            playerTurn = false; 
+                            if (playerHand.HandValue() > 21)
+                            {
+                                Console.WriteLine("Bust! Player loses.");
+                                Console.Write("");
+                                return -pot;
+                            }
+                            playerTurn = false;
                         }
-                        else 
+                        else
                         {
                             Console.WriteLine("Double down can only be done on the first hand.");
-                        } 
+                        }
                         break;
 
                     //stand
-                    case "s": 
-                        playerTurn = false; 
+                    case "s":
+                        playerTurn = false;
                         break;
 
-                    default: 
-                        Console.WriteLine("Invalid option, please try again."); 
+                    default:
+                        Console.WriteLine("Invalid option, please try again.");
                         break;
                 }
             }
 
-            while (dealerHand.HandValue() <= 17) {dealerHand.addCard(deck.DealCard());}
+            while (dealerHand.HandValue() <= 17) { dealerHand.addCard(deck.DealCard()); }
             GameState(); // Show final hands.
 
             // Compare hand values and decide the winner.
             int playerHandValue = playerHand.HandValue();
             int dealerHandValue = dealerHand.HandValue();
 
-            if (dealerHandValue > 21 || playerHandValue > dealerHandValue) 
-            { 
-                Console.WriteLine("Player Wins!"); 
-                Console.Write(""); 
+            if (dealerHandValue > 21 || playerHandValue > dealerHandValue)
+            {
+                Console.WriteLine("Player Wins!");
+                Console.Write("");
                 return pot;
             }
-            else if (playerHandValue < dealerHandValue) 
+            else if (playerHandValue < dealerHandValue)
             {
-                Console.WriteLine("Dealer Wins."); 
-                Console.Write(""); 
+                Console.WriteLine("Dealer Wins.");
+                Console.Write("");
                 return -pot;
             }
-            else 
-            { 
-                Console.WriteLine("Push. It's a tie."); 
-                Console.Write(""); 
+            else
+            {
+                Console.WriteLine("Push. It's a tie.");
+                Console.Write("");
                 return 0;
             }
         }
 
-        // TODO:
         public void Insure()
         {
             bool IsInsured = false;
 
-            foreach (var card in dealerHand) 
+            foreach (var card in dealerHand)
             {
                 if (card.Rank == Rank.Ace)
                 {
@@ -234,7 +210,73 @@ namespace BlackJack_Console
             }
         }
 
-        public void Split() { }
+        public void Split() 
+        {
+            // insert this function where the dealing of cards takes place
+
+            /*
+             * In order to split, two cards must be dealt that have the same value.
+             * 
+             * NOTE: Splitting is optional where if you do split, you turn a single hand 
+             * into two hands where you place an additional bet equal to the original bet.
+             * 
+             * Once you split the cards, the dealer will give you an additional card per hand.
+             * For example if you have two sevens, it will now be one seven on each hand plus a 
+             * drawn card for each hand like [seven of diamond, ace of hearts] and 
+             * [seven of diamond, nine of spades].
+             * 
+             * you are to play out each hand one at a time. You are allowed to hit, stand, double down,
+             * and split again (only splitting when you recieve another pair). As you are playing one hand
+             * at a time, the wins and losses will be encapsulated within those hands individually.
+             * 
+             * SPECIAL RULES:
+             * 1) Splitting aces allow you do draw one card to each ace but you are prohibited from 
+             * hitting.
+             * 2) if you get a 10 card after splitting aces, it is counted as 21 points rather than 'blackjack'
+             * 3) you are allowed to resplit if you get a pair right after the first split causing four hands rather than two.
+             * 4) you are allowed to double down on both hands one by one after the split.
+             */
+
+            //TODO:
+
+            // possible idea: create two instances of a hand with thier individual draws and switch between them as you play?
+
+            bool canSplit;
+
+            //check if two cards are a pair
+            foreach(Card card in Hand)
+            {
+                if (Cards.Count == 2 && Cards[0].Rank == Cards[1].Rank)
+                {
+                    canSplit = true;
+                    break;
+                }
+                else
+                {
+                    canSplit = false;
+                    break;
+                }
+            }
+
+            if (canSplit == true)
+            {
+                //draw a card from the deck for each hand
+
+                // validate if a hand has an ace in it
+
+                // validate if a card has a value of 10
+
+                // figure out how to play each hand individually??? [probably something to do with objects of hands]
+
+                // hit for each hand
+
+                // stand for each hand
+
+                // double down for each hand
+
+                // split if another pair occurs [have a split validation logic embedded in the main loop??]
+            }
+        }
 
 
         public void GameState()

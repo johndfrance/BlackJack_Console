@@ -20,7 +20,6 @@ namespace BlackJack_Console
         public void removeCard(Card card) { Cards.Remove(card); }
 
         public int countCard() { return Cards.Count(); }
-        
 
         public int HandValue()
         {
@@ -47,14 +46,14 @@ namespace BlackJack_Console
 
         public void PrintHand()
         {
-            foreach (Card card in Cards) { Console.WriteLine("[" + card.ToString() + "]");}
+            foreach (Card card in Cards) { Console.WriteLine("[" + card.ToString() + "]"); }
             Console.Write("");
-            Console.WriteLine("Value: "+ HandValue().ToString());
+            Console.WriteLine("Value: " + HandValue().ToString());
             Console.WriteLine("");
         }
 
         public IEnumerator<Card> GetEnumerator() { return Cards.GetEnumerator(); }
-         IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); } // Explicit non-generic interface implementation
+        IEnumerator IEnumerable.GetEnumerator() { return GetEnumerator(); } // Explicit non-generic interface implementation
 
-    } 
+    }
 }

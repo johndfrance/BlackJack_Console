@@ -40,7 +40,7 @@ namespace BlackJack_Console
                 string playerChoice = Console.ReadLine().ToLower();
                 Console.Write("");
 
-                if (playerChoice == "yes") 
+                if (playerChoice == "yes")
                 {
                     Round round = new Round(GameDeck);
                     player.wallet += round.PlayRound();

@@ -11,7 +11,7 @@ namespace BlackJack_Console
         private int id { get; set; }
         private string name { get; set; }
         public int wallet { get; set; }
-      
+
         public Player()
         {
             id = 0;
